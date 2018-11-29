@@ -1,0 +1,94 @@
+<html>
+
+<head>
+    <title>My first three.js app</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script src="js/three.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.3/dat.gui.min.js"></script>
+    <script>
+        var renderer, scene, camera, controls
+        var WIDTH, HEIGHT;
+        var mesh, mesh2;
+
+        stageResize();
+        init();
+
+        function init() {
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+            renderer.setSize(WIDTH, HEIGHT);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.body.appendChild(renderer.domElement);
+            renderer.setClearColor(0xffffff);
+
+            camera = new THREE.PerspectiveCamera(100, WIDTH / HEIGHT, .1, 1000);
+            camera.position.set(246, -5, 40);
+
+            scene = new THREE.Scene();
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            // controls.minDistance = 50;
+
+            spotLight = new THREE.SpotLight(0xffffff);
+            spotLight.position.set(600, 600, 600);
+            scene.add(spotLight);
+
+
+
+            var imageLoader = new THREE.TextureLoader();
+            imageLoader.load("https://ucarecdn.com/a7f91b3f-a1e3-4118-bf1f-59e1262d2fbb/universe2_low_3.jpg", function (
+                data) {
+                var material_univ = new THREE.MeshBasicMaterial({
+                    map: data,
+                    side: THREE.BackSide
+                })
+                // var material_univ = new THREE.MeshLambertMaterial( { color: 0xffff00 } );
+                var geometry_univ = new THREE.SphereGeometry(400, 32, 32);
+                mesh = new THREE.Mesh(geometry_univ, material_univ);
+                // mesh.position.set(0, 0, 0);
+                scene.add(mesh);
+
+
+                var material_2 = new THREE.MeshLambertMaterial({
+                    color: 0x00b7ff
+                });
+                var geometry_2 = new THREE.SphereGeometry(50, 32, 32);
+                mesh2 = new THREE.Mesh(geometry_2, material_2);
+                scene.add(mesh2);
+            });
+
+            render();
+        }
+
+
+        function render() {
+            renderer.render(scene, camera);
+            requestAnimationFrame(render);
+        }
+
+        window.addEventListener('resize', stageResize);
+
+        function stageResize() {
+            WIDTH = window.innerWidth;
+            HEIGHT = window.innerHeight;
+
+            if (renderer != undefined) {
+                renderer.setSize(WIDTH, HEIGHT);
+                camera.aspect = WIDTH / HEIGHT;
+                camera.updateProjectionMatrix();
+            }
+        }
+    </script>
+</body>
+
+</html>
